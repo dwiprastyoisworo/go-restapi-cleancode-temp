@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/dwiprastyoisworo/go-restapi-cleancode-temp/lib/configs"
 	"github.com/dwiprastyoisworo/go-restapi-cleancode-temp/lib/helpers"
@@ -27,6 +28,12 @@ func main() {
 		panic(err)
 	}
 
+	// setup postgres connection
+	_, err = configs.PostgresInit(cfg.Postgres)
+	if err != nil {
+		panic(err)
+	}
+
 	// set log level
 	gin.SetMode(cfg.App.LogLevel)
 
@@ -47,7 +54,7 @@ func main() {
 	go func() {
 		// service connections
 		log.Println("Starting Server ...")
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Fatalf("listen: %s\n", err)
 		}
 	}()
