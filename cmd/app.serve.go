@@ -1,19 +1,23 @@
+//go:build main1
+// +build main1
+
 package main
 
 import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/dwiprastyoisworo/go-restapi-cleancode-temp/lib/configs"
-	"github.com/dwiprastyoisworo/go-restapi-cleancode-temp/lib/helpers"
-	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/dwiprastyoisworo/go-restapi-cleancode-temp/lib/configs"
+	"github.com/dwiprastyoisworo/go-restapi-cleancode-temp/lib/helpers"
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
