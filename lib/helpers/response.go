@@ -1,5 +1,67 @@
 package helpers
 
+import (
+	"github.com/dwiprastyoisworo/go-restapi-cleancode-temp/lib/configs"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
+	"log"
+	"net/http"
+)
+
+type AppError struct {
+	Error       error
+	MessageCode string
+	Code        int
+	Meta        map[string]string
+}
+
+func NewNotFoundError(messageCode string, err error) *AppError {
+	return &AppError{
+		Error:       err,
+		MessageCode: messageCode,
+		Code:        http.StatusNotFound,
+	}
+}
+
+func NewInternalServerError(messageCode string, err error) *AppError {
+	return &AppError{
+		Error:       err,
+		MessageCode: messageCode,
+		Code:        http.StatusInternalServerError,
+	}
+}
+
+func NewBadRequestError(messageCode string, err error) *AppError {
+	return &AppError{
+		Error:       err,
+		MessageCode: messageCode,
+		Code:        http.StatusBadRequest,
+	}
+}
+
+func NewUnauthorizedError(messageCode string, err error) *AppError {
+	return &AppError{
+		Error:       err,
+		MessageCode: messageCode,
+		Code:        http.StatusUnauthorized,
+	}
+}
+
+func NewForbiddenError(messageCode string, err error) *AppError {
+	return &AppError{
+		Error:       err,
+		MessageCode: messageCode,
+		Code:        http.StatusForbidden,
+	}
+}
+
+func NewConflictError(messageCode string, err error) *AppError {
+	return &AppError{
+		Error:       err,
+		MessageCode: messageCode,
+		Code:        http.StatusConflict,
+	}
+}
+
 // ResponseError digunakan untuk menyimpan detail error jika terjadi kegagalan.
 type ResponseError struct {
 	Code    string `json:"code,omitempty"`
@@ -33,13 +95,14 @@ func NewSuccessResponse(data interface{}, message string, meta *Meta) *Response 
 }
 
 // NewErrorResponse membuat response error.
-func NewErrorResponse(code, messageStatus, messageError string) *Response {
+func NewErrorResponse(response *AppError, i18n *i18n.Bundle) *Response {
+	log.Print(response.Error)
+	message := configs.Translate(i18n, "en", response.MessageCode, response.Meta)
 	return &Response{
 		Success: false,
-		Message: messageStatus,
 		Error: &ResponseError{
-			Code:    code,
-			Message: messageError,
+			Code:    response.MessageCode,
+			Message: message,
 		},
 	}
 }

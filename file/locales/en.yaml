@@ -1,0 +1,14 @@
+success :
+    global :
+        created : "{name} created successfully"
+        updated : "{name} updated successfully"
+        deleted : "{name} deleted successfully"
+failure :
+    global :
+        created : "Failed to create {name}"
+        updated : "Failed to update {name}"
+        deleted : "Failed to delete {name}"
+        not_found : "{name} not found"
+        already_exists : "{name} already exists"
+    user:
+        hash : "Failed to hash password"

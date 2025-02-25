@@ -21,10 +21,10 @@ func NewUserUsecase(repo repositories.RepositoryImpl[models.Users], repoUser rep
 }
 
 type UserUsecaseImpl interface {
-	Register(ctx context.Context, payload *models.RegisterPayload) error
+	Register(ctx context.Context, payload *models.RegisterPayload) *helpers.AppError
 }
 
-func (u UserUsecase) Register(ctx context.Context, payload *models.RegisterPayload) error {
+func (u UserUsecase) Register(ctx context.Context, payload *models.RegisterPayload) *helpers.AppError {
 	tx := u.db.Begin().WithContext(ctx)
 	defer func() {
 		if r := recover(); r != nil {
@@ -38,14 +38,14 @@ func (u UserUsecase) Register(ctx context.Context, payload *models.RegisterPaylo
 	err := u.checkUsernameExists(tx, payload.Username)
 	if err != nil {
 		log.Print(err)
-		return err
+		return helpers.NewNotFoundError("username already exists", err)
 	}
 
 	// generate password hash
 	hash, err := helpers.HashPassword(payload.Password)
 	if err != nil {
 		log.Print(err)
-		return errors.New("failed to hash password")
+		return helpers.NewBadRequestError("failed to hash password", err)
 	}
 
 	// create user
@@ -59,9 +59,8 @@ func (u UserUsecase) Register(ctx context.Context, payload *models.RegisterPaylo
 	err = u.repo.Create(tx, user)
 	if err != nil {
 		log.Print(err)
-		return errors.New("failed to create user")
+		return helpers.NewConflictError("failed to create user", err)
 	}
-
 	return nil
 
 }
