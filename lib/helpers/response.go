@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"github.com/dwiprastyoisworo/go-restapi-cleancode-temp/lib/configs"
+	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"log"
 	"net/http"
@@ -12,6 +13,22 @@ type AppError struct {
 	MessageCode string
 	Code        int
 	Meta        map[string]string
+}
+
+type AppSuccess struct {
+	MessageCode string
+	Data        interface{}
+	Meta        *Meta
+	Code        int
+}
+
+func NewSuccess(messageCode string, data interface{}, meta *Meta, code int) *AppSuccess {
+	return &AppSuccess{
+		MessageCode: messageCode,
+		Data:        data,
+		Meta:        meta,
+		Code:        code,
+	}
 }
 
 func NewNotFoundError(messageCode string, err error) *AppError {
@@ -85,23 +102,26 @@ type Response struct {
 }
 
 // NewSuccessResponse membuat response yang sukses.
-func NewSuccessResponse(data interface{}, message string, meta *Meta) *Response {
+func (c *AppSuccess) Applied(ctx *gin.Context, i18n *i18n.Bundle) *Response {
+	lang := ctx.GetHeader("Accept-Language")
+	message := configs.Translate(i18n, lang, c.MessageCode, nil)
 	return &Response{
 		Success: true,
 		Message: message,
-		Data:    data,
-		Meta:    meta,
+		Data:    c.Data,
+		Meta:    c.Meta,
 	}
 }
 
 // NewErrorResponse membuat response error.
-func NewErrorResponse(response *AppError, i18n *i18n.Bundle) *Response {
-	log.Print(response.Error)
-	message := configs.Translate(i18n, "en", response.MessageCode, response.Meta)
+func (c *AppError) Applied(ctx *gin.Context, i18n *i18n.Bundle) *Response {
+	log.Print(c.Error)
+	lang := ctx.GetHeader("Accept-Language")
+	message := configs.Translate(i18n, lang, c.MessageCode, c.Meta)
 	return &Response{
 		Success: false,
 		Error: &ResponseError{
-			Code:    response.MessageCode,
+			Code:    c.MessageCode,
 			Message: message,
 		},
 	}

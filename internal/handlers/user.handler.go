@@ -21,12 +21,13 @@ func NewUserHandler(userUsecase usecases.UserUsecaseImpl, i18nBundle *i18n.Bundl
 func (r *UserHandler) Register(c *gin.Context) {
 	var payload models.RegisterPayload
 	if err := c.ShouldBindJSON(&payload); err != nil {
-		// TODO: ADD RESPONSE
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, helpers.NewBadRequestError("invalid payload", err).
+			Applied(c, r.i18nBundle))
 	}
 	err := r.userUsecase.Register(c, &payload)
 	if err != nil {
-		c.JSON(err.Code, helpers.NewErrorResponse(err, r.i18nBundle))
+		c.JSON(err.Code, err.Applied(c, r.i18nBundle))
 	}
-	c.JSON(http.StatusCreated, gin.H{"message": "success"})
+	successResponse := helpers.NewSuccess("success.global.created", nil, nil, http.StatusCreated)
+	c.JSON(http.StatusCreated, successResponse.Applied(c, r.i18nBundle))
 }

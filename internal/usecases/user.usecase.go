@@ -7,7 +7,6 @@ import (
 	"github.com/dwiprastyoisworo/go-restapi-cleancode-temp/lib/helpers"
 	"github.com/dwiprastyoisworo/go-restapi-cleancode-temp/lib/models"
 	"gorm.io/gorm"
-	"log"
 )
 
 type UserUsecase struct {
@@ -37,14 +36,12 @@ func (u UserUsecase) Register(ctx context.Context, payload *models.RegisterPaylo
 	// get user by username
 	err := u.checkUsernameExists(tx, payload.Username)
 	if err != nil {
-		log.Print(err)
 		return helpers.NewNotFoundError("username already exists", err)
 	}
 
 	// generate password hash
 	hash, err := helpers.HashPassword(payload.Password)
 	if err != nil {
-		log.Print(err)
 		return helpers.NewBadRequestError("failed to hash password", err)
 	}
 
@@ -58,7 +55,6 @@ func (u UserUsecase) Register(ctx context.Context, payload *models.RegisterPaylo
 
 	err = u.repo.Create(tx, user)
 	if err != nil {
-		log.Print(err)
 		return helpers.NewConflictError("failed to create user", err)
 	}
 	return nil
