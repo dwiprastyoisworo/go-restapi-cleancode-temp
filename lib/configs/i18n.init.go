@@ -15,7 +15,7 @@ func InitI18n() *i18n.Bundle {
 	return i18nBundle
 }
 
-func Translate(bundle *i18n.Bundle, lang string, key string, data map[string]string) string {
+func Translate(bundle *i18n.Bundle, lang string, key string, data map[string]any) string {
 	localize := i18n.NewLocalizer(bundle, lang)
 	return localize.MustLocalize(&i18n.LocalizeConfig{
 		MessageID:    key,

@@ -44,7 +44,7 @@ func AppInit() *http.Server {
 	app.Use(helpers.CorsConfig())
 
 	// setup routes
-	appRoute := routes.NewUserRoute(db, bundle, app)
+	appRoute := routes.NewUserRoute(db, bundle, app, cfg)
 	appRoute.RouteInit()
 
 	srv := &http.Server{

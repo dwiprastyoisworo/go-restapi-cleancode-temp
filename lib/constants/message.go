@@ -7,4 +7,7 @@ const (
 	SuccessCreated = "success.global.created"
 	SuccessUpdated = "success.global.updated"
 	SuccessDeleted = "success.global.deleted"
+	ErrorUserHash  = "failure.user.hash"
+	ErrorCreated   = "failure.global.created"
+	ErrorPayload   = "failure.global.payload"
 )

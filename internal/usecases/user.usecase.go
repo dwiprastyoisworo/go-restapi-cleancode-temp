@@ -4,8 +4,10 @@ import (
 	"context"
 	"errors"
 	"github.com/dwiprastyoisworo/go-restapi-cleancode-temp/internal/repositories"
+	"github.com/dwiprastyoisworo/go-restapi-cleancode-temp/lib/constants"
 	"github.com/dwiprastyoisworo/go-restapi-cleancode-temp/lib/helpers"
 	"github.com/dwiprastyoisworo/go-restapi-cleancode-temp/lib/models"
+	"github.com/dwiprastyoisworo/go-restapi-cleancode-temp/lib/response"
 	"gorm.io/gorm"
 )
 
@@ -20,10 +22,10 @@ func NewUserUsecase(repo repositories.RepositoryImpl[models.Users], repoUser rep
 }
 
 type UserUsecaseImpl interface {
-	Register(ctx context.Context, payload *models.RegisterPayload) *helpers.AppError
+	Register(ctx context.Context, payload *models.RegisterPayload) *response.APIError
 }
 
-func (u UserUsecase) Register(ctx context.Context, payload *models.RegisterPayload) *helpers.AppError {
+func (u UserUsecase) Register(ctx context.Context, payload *models.RegisterPayload) *response.APIError {
 	tx := u.db.Begin().WithContext(ctx)
 	defer func() {
 		if r := recover(); r != nil {
@@ -36,13 +38,13 @@ func (u UserUsecase) Register(ctx context.Context, payload *models.RegisterPaylo
 	// get user by username
 	err := u.checkUsernameExists(tx, payload.Username)
 	if err != nil {
-		return helpers.NewNotFoundError("username already exists", err)
+		return response.NewAPIError(constants.ErrorConflictType, constants.DataExists, err, nil)
 	}
 
 	// generate password hash
 	hash, err := helpers.HashPassword(payload.Password)
 	if err != nil {
-		return helpers.NewBadRequestError("failed to hash password", err)
+		return response.NewAPIError(constants.ErrorConflictType, constants.ErrorUserHash, err, nil)
 	}
 
 	// create user
@@ -55,7 +57,7 @@ func (u UserUsecase) Register(ctx context.Context, payload *models.RegisterPaylo
 
 	err = u.repo.Create(tx, user)
 	if err != nil {
-		return helpers.NewConflictError("failed to create user", err)
+		return response.NewAPIError(constants.ErrorConflictType, constants.ErrorCreated, err, nil)
 	}
 	return nil
 

@@ -10,5 +10,6 @@ failure :
         deleted : "Failed to delete {name}"
         not_found : "{name} not found"
         already_exists : "{name} already exists"
+        payload_invalid : "Invalid payload"
     user:
         hash : "Failed to hash password"

@@ -4,7 +4,8 @@
     "version": "1.0.0",
     "description": "User Service",
     "port": 3000,
-    "log-level": "debug"
+    "log-level": "debug",
+    "is-development": true
   },
   "postgres": {
     "host": "localhost",

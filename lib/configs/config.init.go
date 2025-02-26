@@ -5,11 +5,12 @@ import (
 )
 
 type App struct {
-	Name        string `json:"Name" mapstructure:"name"`
-	Version     string `json:"Version" mapstructure:"version"`
-	Description string `json:"Description" mapstructure:"description"`
-	Port        int    `json:"Port" mapstructure:"port"`
-	LogLevel    string `json:"LogLevel" mapstructure:"log-level"`
+	Name          string `json:"Name" mapstructure:"name"`
+	Version       string `json:"Version" mapstructure:"version"`
+	Description   string `json:"Description" mapstructure:"description"`
+	Port          int    `json:"Port" mapstructure:"port"`
+	LogLevel      string `json:"LogLevel" mapstructure:"log-level"`
+	IsDevelopment bool   `json:"IsDevelopment" mapstructure:"is-development"`
 }
 
 type Postgres struct {

@@ -10,5 +10,6 @@ failure :
     deleted : "Gagal menghapus {name}"
     not_found: "{name} tidak ditemukan"
     already_exists: "{name} sudah ada"
+    payload_invalid : "Payload tidak valid"
   user:
     hash : "Gagal menghash password"
