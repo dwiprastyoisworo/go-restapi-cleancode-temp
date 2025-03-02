@@ -46,24 +46,14 @@ func CustomLogger(logger *logrus.Logger) gin.HandlerFunc {
 		start := time.Now()
 		// Process request
 		c.Next()
-
-		// Get request latency
-		latency := time.Since(start)
-
-		// Get some useful information
-		statusCode := c.Writer.Status()
-		clientIP := c.ClientIP()
-		method := c.Request.Method
-		path := c.Request.URL.Path
-		err := c.Errors.Errors()
 		// Log the information
 		logger.WithFields(logrus.Fields{
-			"status":    statusCode,
-			"latency":   latency,
-			"client_ip": clientIP,
-			"method":    method,
-			"path":      path,
-			"error":     err,
+			"status":    c.Writer.Status(),
+			"latency":   time.Since(start),
+			"client_ip": c.ClientIP(),
+			"method":    c.Request.Method,
+			"path":      c.Request.URL.Path,
+			"error":     c.Errors.Errors(),
 		}).Info("Handled request")
 	}
 }
