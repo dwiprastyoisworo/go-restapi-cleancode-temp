@@ -1,8 +1,8 @@
 success :
   global :
-    created : "{name} Berhasil Dibuat"
-    updated : "{name} Berhasil Dirubah"
-    deleted : "{name} Berhasil Dihapus"
+    created : "Berhasil Dibuat"
+    updated : "Berhasil Dirubah"
+    deleted : "Berhasil Dihapus"
 failure :
   global :
     created : "Gagal membuat {name}"

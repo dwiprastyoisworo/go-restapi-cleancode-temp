@@ -1,8 +1,8 @@
 success :
     global :
-        created : "{name} created successfully"
-        updated : "{name} updated successfully"
-        deleted : "{name} deleted successfully"
+        created : "created successfully"
+        updated : "updated successfully"
+        deleted : "deleted successfully"
 failure :
     global :
         created : "Failed to create {name}"

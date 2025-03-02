@@ -10,6 +10,7 @@ func (f *ResponseFormatter) FormatSuccess(ctx *gin.Context, success *APISuccess)
 
 	return &Response{
 		Success: true,
+		Code:    success.MessageCode,
 		Message: message,
 		Data:    success.Data,
 		Meta:    success.Meta,
@@ -17,20 +18,17 @@ func (f *ResponseFormatter) FormatSuccess(ctx *gin.Context, success *APISuccess)
 }
 
 func (f *ResponseFormatter) FormatError(ctx *gin.Context, apiError *APIError) *Response {
-	// Log error dengan metadata
-	f.logger.LogError(apiError.Err, map[string]any{
-		"type":         apiError.Type,
-		"message_code": apiError.MessageCode,
-		"meta":         apiError.Meta,
-	})
+	if apiError.Err != nil {
+		_ = ctx.Error(apiError.Err)
+	}
 
 	// Terjemahkan pesan error
 	translatedMsg := f.translateMessage(ctx, apiError.MessageCode, apiError.Meta)
 
 	response := &Response{
 		Success: false,
+		Code:    apiError.MessageCode,
 		Error: &ErrorDetail{
-			Code:    apiError.MessageCode,
 			Message: translatedMsg,
 		},
 	}

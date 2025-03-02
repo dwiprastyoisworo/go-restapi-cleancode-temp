@@ -21,6 +21,7 @@ func NewFormatter(i18n *i18n.Bundle, logger Logger, exposeError bool) *ResponseF
 }
 
 type Response struct {
+	Code    string       `json:"code,omitempty"`
 	Success bool         `json:"success"`
 	Message string       `json:"message,omitempty"`
 	Data    any          `json:"data,omitempty"`
@@ -29,7 +30,6 @@ type Response struct {
 }
 
 type ErrorDetail struct {
-	Code    string `json:"code,omitempty"`
 	Message string `json:"message,omitempty"`
 	Debug   string `json:"debug,omitempty"` // Hanya untuk environment non-production
 }

@@ -44,7 +44,6 @@ func CustomLogger(logger *logrus.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// get request start time
 		start := time.Now()
-
 		// Process request
 		c.Next()
 
@@ -56,7 +55,7 @@ func CustomLogger(logger *logrus.Logger) gin.HandlerFunc {
 		clientIP := c.ClientIP()
 		method := c.Request.Method
 		path := c.Request.URL.Path
-
+		err := c.Errors.Errors()
 		// Log the information
 		logger.WithFields(logrus.Fields{
 			"status":    statusCode,
@@ -64,6 +63,7 @@ func CustomLogger(logger *logrus.Logger) gin.HandlerFunc {
 			"client_ip": clientIP,
 			"method":    method,
 			"path":      path,
+			"error":     err,
 		}).Info("Handled request")
 	}
 }

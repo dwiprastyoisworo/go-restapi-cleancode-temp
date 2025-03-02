@@ -5,8 +5,8 @@ import (
 )
 
 type RepositoryImpl[T any] interface {
-	Create(db *gorm.DB, entity *T) error
-	Update(db *gorm.DB, entity *T) error
+	Create(db *gorm.DB, payload map[string]interface{}) error
+	Update(db *gorm.DB, payload map[string]interface{}) error
 	Delete(db *gorm.DB, id any) error
 	GetByID(db *gorm.DB, id any) (*T, error)
 	GetAll(db *gorm.DB, page, pageSize int) ([]T, int64, error)
@@ -20,21 +20,21 @@ func NewRepository[T any]() RepositoryImpl[T] {
 	return &Repository[T]{}
 }
 
-func (r Repository[T]) Create(db *gorm.DB, entity *T) error {
-	return db.Create(entity).Error
+func (r Repository[T]) Create(db *gorm.DB, payload map[string]interface{}) error {
+	return db.Model(new(T)).Create(payload).Error
 }
 
-func (r Repository[T]) Update(db *gorm.DB, entity *T) error {
-	return db.Save(entity).Error
+func (r Repository[T]) Update(db *gorm.DB, payload map[string]interface{}) error {
+	return db.Model(new(T)).Save(payload).Error
 }
 
 func (r Repository[T]) Delete(db *gorm.DB, id any) error {
-	return db.Delete(id).Error
+	return db.Model(new(T)).Delete(id).Error
 }
 
 func (r Repository[T]) GetByID(db *gorm.DB, id any) (*T, error) {
 	var entity T
-	err := db.First(&entity, id).Error
+	err := db.Model(new(T)).First(&entity, id).Error
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func (r Repository[T]) GetAll(db *gorm.DB, page, pageSize int) ([]T, int64, erro
 func (r Repository[T]) DynamicQuery(db *gorm.DB, payload map[string]string) ([]T, error) {
 	// example payload: map[string]string{"username": "admin"}
 	var entities []T
-	err := db.Where(payload).Find(&entities).Error
+	err := db.Model(new(T)).Where(payload).Find(&entities).Error
 	if err != nil {
 		return nil, err
 	}

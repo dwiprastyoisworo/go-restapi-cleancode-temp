@@ -1,7 +1,7 @@
 .PHONY: run server migrate rollback build clean
 
 # Menjalankan service utama
-app:
+run:
 	go run cmd/app/*.go
 
 # Menjalankan migrasi database (up)

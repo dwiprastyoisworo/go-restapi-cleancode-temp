@@ -48,14 +48,13 @@ func (u UserUsecase) Register(ctx context.Context, payload *models.RegisterPaylo
 	}
 
 	// create user
-	user := &models.Users{
-		Username: payload.Username,
-		Password: hash,
-		Email:    payload.Email,
-		FullName: payload.FullName,
+	userMap := map[string]interface{}{
+		"username": payload.Username,
+		"password": hash,
+		"email":    payload.Email,
 	}
 
-	err = u.repo.Create(tx, user)
+	err = u.repo.Create(tx, userMap)
 	if err != nil {
 		return response.NewAPIError(constants.ErrorConflictType, constants.ErrorCreated, err, nil)
 	}

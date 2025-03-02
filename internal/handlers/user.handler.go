@@ -31,11 +31,14 @@ func (r *UserHandler) Register(c *gin.Context) {
 	var payload models.RegisterPayload
 	if err := c.ShouldBindJSON(&payload); err != nil {
 		c.JSON(http.StatusBadRequest, r.response.FormatError(c, response.NewAPIError(constants.ErrorBadRequestType, constants.ErrorPayload, err, nil)))
+		return
 	}
 	err := r.userUsecase.Register(c, &payload)
 	if err != nil {
 		c.JSON(err.HTTPStatus(), r.response.FormatError(c, err))
+		return
 	}
 	successResponse := response.NewSuccess(constants.SuccessCreated, nil, nil, http.StatusCreated)
-	c.JSON(http.StatusCreated, successResponse)
+	c.JSON(http.StatusCreated, r.response.FormatSuccess(c, successResponse))
+	return
 }
