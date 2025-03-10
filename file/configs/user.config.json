@@ -8,7 +8,7 @@
     "is-development": true
   },
   "postgres": {
-    "host": "localhost",
+    "host": "postgres",
     "port": 5432,
     "database": "mydatabase",
     "username": "root",
