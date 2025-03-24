@@ -7,7 +7,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"testing"
-	"time"
 )
 
 func TestCreate(t *testing.T) {
@@ -28,20 +27,18 @@ func TestCreate(t *testing.T) {
 
 	// Menyiapkan ekspektasi untuk query INSERT
 	mock.ExpectBegin()
-	mock.ExpectExec("INSERT INTO \"users\" (.+) VALUES ($1,$2,$3,$4,$5,$6)").
-		WithArgs("admin", "admin", "email@gmail.com", "Admin", sqlmock.AnyArg(), sqlmock.AnyArg()). // Gunakan sqlmock.AnyArg() untuk waktu
-		WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectQuery(`INSERT INTO "users" \("email","fullName","password","username"\) VALUES \(\$1,\$2,\$3,\$4\) RETURNING "id"`).
+		WithArgs("email@gmail.com", "Admin", "admin", "admin").
+		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
 	mock.ExpectCommit()
 
 	// Membuat repository
 	repo := repositories.NewRepository[models.Users]()
-	err = repo.Create(gormDB, &models.Users{
-		Username:  "admin",
-		Password:  "admin",
-		Email:     "email@gmail.com",
-		FullName:  "Admin",
-		CreatedAt: time.Now().Format("2006-01-02 15:04:05"), // Format time.Time ke string
-		UpdatedAt: time.Now().Format("2006-01-02 15:04:05"), // Gunakan time.Time langsung
+	err = repo.Create(gormDB, map[string]interface{}{
+		"username": "admin",
+		"password": "admin",
+		"email":    "email@gmail.com",
+		"fullName": "Admin",
 	})
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when creating a new record", err)
